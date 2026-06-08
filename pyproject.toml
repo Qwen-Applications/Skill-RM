@@ -1,0 +1,35 @@
+[project]
+name = "skill-rm"
+version = "0.1.0"
+description = "Skill-RM reward judging and instruction-following reproduction code."
+requires-python = ">=3.10"
+license = { text = "Apache-2.0" }
+dependencies = [
+  "numpy",
+  "pyyaml",
+  "requests",
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest",
+]
+rl = [
+  "datasets",
+  "pyarrow",
+]
+
+[tool.setuptools]
+packages = [
+  "skillrm",
+  "skillrm.ablations",
+  "skillrm.benchmarks",
+  "skillrm.benchmarks.pairwise",
+  "skillrm.benchmarks.rewardbench2",
+  "skillrm.common",
+  "skillrm.runners",
+  "skillrm.runtime",
+  "experiments",
+  "experiments.if_rewardbench",
+  "experiments.jetts_seqko",
+]

@@ -1,0 +1,10 @@
+variant: skill_mounted_verifier_plus_code
+resource_delivery_mode: mounted_plus_code
+description: Pointwise IF-RL reward setting. Mount VerInstruct sample resources plus static IF resources and expose python_sandbox after skill loading for deterministic visible-text checks.
+enable_python_sandbox: true
+python_sandbox_timeout: 3.0
+python_sandbox_max_code_chars: 6000
+python_sandbox_max_output_chars: 4000
+max_python_sandbox_calls: 3
+max_agent_steps: 7
+max_resources_per_sample: 5

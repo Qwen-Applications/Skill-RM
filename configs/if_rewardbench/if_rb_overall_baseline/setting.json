@@ -1,0 +1,13 @@
+{
+  "enable_tools": false,
+  "max_tokens": 4096,
+  "parser_protocol": {
+    "style": "regex",
+    "pattern": "\\[\\[([AB])\\]\\]",
+    "allow_fallback": false,
+    "labels": {
+      "A": "A",
+      "B": "B"
+    }
+  }
+}

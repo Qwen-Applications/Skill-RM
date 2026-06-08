@@ -1,0 +1,7 @@
+{
+  "enable_tools": true,
+  "max_tokens": 4096,
+  "parser_protocol": {
+    "style": "raw"
+  }
+}

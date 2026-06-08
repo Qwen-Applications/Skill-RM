@@ -1,0 +1,11 @@
+version_file: 0.8.0.dev
+source_project: https://github.com/verl-project/verl
+
+This repository does not vendor verl source code. The pointwise IF-RL recipe is
+installed into an external verl checkout whose verl/version/version file must
+contain 0.8.0.dev unless --expected-version is passed deliberately.
+
+The install helper can copy the recipe into an existing checkout, or clone a
+public checkout with --clone-url and --verl-ref before validating the version
+string. For archival reproduction, pin the exact verl commit you used after the
+version-file check passes.

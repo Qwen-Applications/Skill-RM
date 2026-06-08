@@ -1,0 +1,361 @@
+resources:
+  - id: rubric.generic_pairwise
+    type: rubric
+    implementation_kind: reference
+    subtype: generic_pairwise
+    path: rubrics/generic_pairwise.md
+    applies_to: [pairwise, listwise]
+    cost: low
+    hard_or_soft: mixed
+    decision_impact: strong
+    failure_modes_mitigated: [generic_preference_noise, criteria_drift]
+    inputs_required: [prompt, candidate_responses]
+    outputs_produced: [generic_reward_criteria]
+    leakage_level: sample_visible
+    allowed_setting: [skill_operational]
+
+  - id: rubric.rewardbench2
+    type: rubric
+    implementation_kind: reference
+    subtype: benchmark_specific
+    path: rubrics/rewardbench2.md
+    benchmarks: [RewardBench2, rewardbench2, rewardbench_v2, rb2]
+    applies_to: [listwise, best_of_n, pairwise_reduction]
+    cost: low
+    hard_or_soft: mixed
+    decision_impact: strong
+    failure_modes_mitigated: [style_bias, instruction_failure, listwise_criteria_drift]
+    inputs_required: [prompt, candidate_responses, benchmark_metadata]
+    outputs_produced: [benchmark_specific_criteria]
+    leakage_level: benchmark_visible
+    allowed_setting: [skill_operational]
+
+  - id: rubric.rmbench
+    type: rubric
+    implementation_kind: reference
+    subtype: benchmark_specific
+    path: rubrics/rmbench.md
+    benchmarks: [RM-Bench, rmbench, rm_bench]
+    applies_to: [pairwise, response_matrix]
+    cost: low
+    hard_or_soft: mixed
+    decision_impact: strong
+    failure_modes_mitigated: [tie_overuse, length_bias, safety_refusal_boundary_error]
+    inputs_required: [prompt, candidate_responses, domain]
+    outputs_produced: [benchmark_specific_criteria]
+    leakage_level: benchmark_visible
+    allowed_setting: [skill_operational]
+
+  - id: rubric.judgebench
+    type: rubric
+    implementation_kind: reference
+    subtype: benchmark_specific
+    path: rubrics/judgebench.md
+    benchmarks: [JudgeBench, judgebench, judgebench_gpt]
+    applies_to: [pairwise, forced_choice]
+    cost: low
+    hard_or_soft: mixed
+    decision_impact: strong
+    failure_modes_mitigated: [position_bias, fluent_wrong_answer, final_option_error]
+    inputs_required: [prompt, candidate_responses, task_type]
+    outputs_produced: [benchmark_specific_criteria]
+    leakage_level: benchmark_visible
+    allowed_setting: [skill_operational]
+
+  - id: principle.generic
+    type: principle
+    implementation_kind: reference
+    subtype: generic_reward_principles
+    path: references/generic_principles.md
+    applies_to: [pairwise, listwise]
+    cost: low
+    hard_or_soft: soft
+    decision_impact: strong
+    failure_modes_mitigated: [task_intent_miss, style_over_correctness]
+    inputs_required: [prompt, candidate_responses]
+    outputs_produced: [principle_guidance]
+    leakage_level: sample_visible
+    allowed_setting: [skill_operational]
+
+  - id: principle.rewardbench2
+    type: principle
+    implementation_kind: reference
+    subtype: benchmark_specific
+    path: references/rewardbench2_principles.md
+    benchmarks: [RewardBench2, rewardbench2, rewardbench_v2, rb2]
+    applies_to: [listwise, best_of_n, pairwise_reduction]
+    cost: low
+    hard_or_soft: soft
+    decision_impact: strong
+    failure_modes_mitigated: [listwise_criteria_drift, verbosity_bias]
+    inputs_required: [prompt, candidate_responses, benchmark_metadata]
+    outputs_produced: [benchmark_principles]
+    leakage_level: benchmark_visible
+    allowed_setting: [skill_operational]
+
+  - id: principle.rmbench
+    type: principle
+    implementation_kind: reference
+    subtype: benchmark_specific
+    path: references/rmbench_principles.md
+    benchmarks: [RM-Bench, rmbench, rm_bench]
+    applies_to: [pairwise, response_matrix]
+    cost: low
+    hard_or_soft: soft
+    decision_impact: strong
+    failure_modes_mitigated: [tie_overuse, length_bias]
+    inputs_required: [prompt, candidate_responses, domain]
+    outputs_produced: [benchmark_principles]
+    leakage_level: benchmark_visible
+    allowed_setting: [skill_operational]
+
+  - id: principle.judgebench
+    type: principle
+    implementation_kind: reference
+    subtype: benchmark_specific
+    path: references/judgebench_principles.md
+    benchmarks: [JudgeBench, judgebench, judgebench_gpt]
+    applies_to: [pairwise, forced_choice]
+    cost: low
+    hard_or_soft: soft
+    decision_impact: strong
+    failure_modes_mitigated: [position_bias, final_option_error]
+    inputs_required: [prompt, candidate_responses, task_type]
+    outputs_produced: [benchmark_principles]
+    leakage_level: benchmark_visible
+    allowed_setting: [skill_operational]
+
+  - id: verifier.protocol
+    type: verifier
+    implementation_kind: reference
+    subtype: verifier_usage_policy
+    path: verifiers/hard_verifier_protocol.md
+    applies_to: [reference, checklist, code, math]
+    cost: low
+    hard_or_soft: mixed
+    decision_impact: veto
+    failure_modes_mitigated: [style_over_correctness, hidden_label_leakage]
+    inputs_required: [visible_reference_or_checklist]
+    outputs_produced: [verifier_usage_policy]
+    leakage_level: sample_visible
+    allowed_setting: [skill_operational]
+
+  - id: tool.math_verify
+    type: tool_protocol
+    implementation_kind: reference
+    subtype: math_verify_protocol
+    path: references/tool_math_verify.md
+    applies_to: [math, reasoning]
+    cost: low
+    hard_or_soft: hard
+    decision_impact: evidence
+    failure_modes_mitigated: [math_final_answer_error]
+    inputs_required: [visible_math_expression]
+    outputs_produced: [verification_protocol]
+    leakage_level: sample_visible
+    allowed_setting: [skill_operational]
+
+  - id: tool.evalplus
+    type: tool_protocol
+    implementation_kind: reference
+    subtype: code_correctness_protocol
+    path: references/tool_evalplus.md
+    applies_to: [code, engineering]
+    cost: low
+    hard_or_soft: hard
+    decision_impact: evidence
+    failure_modes_mitigated: [code_runtime_error, missing_api_shape]
+    inputs_required: [visible_code, visible_tests]
+    outputs_produced: [code_check_protocol]
+    leakage_level: sample_visible
+    allowed_setting: [skill_operational]
+
+  - id: tool.factool
+    type: tool_protocol
+    implementation_kind: reference
+    subtype: factuality_protocol
+    path: references/tool_factool.md
+    applies_to: [factuality, fact_checking]
+    cost: low
+    hard_or_soft: mixed
+    decision_impact: evidence
+    failure_modes_mitigated: [unsupported_factual_claims]
+    inputs_required: [visible_claims]
+    outputs_produced: [factuality_protocol]
+    leakage_level: sample_visible
+    allowed_setting: [skill_operational]
+
+  - id: bias_control
+    type: calibration
+    implementation_kind: reference
+    subtype: bias_control
+    path: references/bias_control.md
+    applies_to: [pairwise, listwise]
+    cost: low
+    hard_or_soft: soft
+    decision_impact: calibration
+    failure_modes_mitigated: [position_bias, verbosity_bias, style_bias, confidence_bias]
+    inputs_required: [candidate_responses, provisional_verdict]
+    outputs_produced: [bias_check_policy]
+    leakage_level: sample_visible
+    allowed_setting: [skill_operational]
+
+  - id: aggregation.operational
+    type: aggregation
+    implementation_kind: reference
+    subtype: resource_rich_priority
+    path: references/operational_aggregation.md
+    applies_to: [pairwise, listwise]
+    cost: low
+    hard_or_soft: mixed
+    decision_impact: strong
+    failure_modes_mitigated: [resource_conflict, weak_evidence_overreach]
+    inputs_required: [resource_outputs, candidate_responses]
+    outputs_produced: [aggregation_policy]
+    leakage_level: sample_visible
+    allowed_setting: [skill_operational]
+
+  - id: output_format
+    type: output_contract
+    implementation_kind: reference
+    subtype: json_verdict_contract
+    path: references/output_format.md
+    applies_to: [pairwise, listwise]
+    cost: low
+    hard_or_soft: hard
+    decision_impact: formatting
+    failure_modes_mitigated: [parse_error]
+    inputs_required: [final_verdict]
+    outputs_produced: [json_output_contract]
+    leakage_level: sample_visible
+    allowed_setting: [skill_operational]
+
+runtime_resources:
+  - id: sample.task_metadata
+    type: metadata
+    implementation_kind: runtime_sample
+    subtype: benchmark_and_task_metadata
+    applies_to: [pairwise, listwise]
+    cost: low
+    hard_or_soft: soft
+    decision_impact: routing
+    failure_modes_mitigated: [resource_misrouting]
+    inputs_required: [sample]
+    outputs_produced: [visible_metadata]
+    leakage_level: benchmark_visible
+    allowed_setting: [skill_operational]
+    visibility: always_when_operational
+    provenance: loader_visible_fields
+
+  - id: sample.reference_or_ground_truth
+    type: reference
+    implementation_kind: runtime_sample
+    subtype: visible_reference_or_ground_truth
+    applies_to: [pairwise, listwise, objective_answer, code, math]
+    cost: low
+    hard_or_soft: mixed
+    decision_impact: evidence
+    failure_modes_mitigated: [fluent_wrong_answer, final_answer_error, style_over_correctness]
+    inputs_required: [sample.reference]
+    outputs_produced: [reference_text]
+    leakage_level: sample_visible
+    allowed_setting: [skill_operational]
+    visibility: when_sample_has_reference
+    provenance: dataset_visible_reference_or_answer_key
+
+  - id: sample.checklist_or_constraints
+    type: checklist
+    implementation_kind: runtime_sample
+    subtype: visible_checklist_or_constraints
+    applies_to: [instruction_following, pairwise, listwise]
+    cost: low
+    hard_or_soft: mixed
+    decision_impact: strong
+    failure_modes_mitigated: [missed_requirement, checklist_coverage_error, constraint_violation]
+    inputs_required: [sample.checklist_or_constraints]
+    outputs_produced: [checklist_or_constraint_items]
+    leakage_level: sample_visible
+    allowed_setting: [skill_operational]
+    visibility: when_sample_has_checklist_or_constraints
+    provenance: dataset_visible_checklist_or_constraints
+    aliases: [sample.checklist]
+
+  - id: tool.python_sandbox
+    type: tool
+    implementation_kind: runtime_python_sandbox
+    subtype: visible_content_python_execution
+    applies_to: [instruction_following, math, code, formatting, structured_output, pairwise, listwise]
+    cost: medium
+    hard_or_soft: hard
+    decision_impact: evidence
+    failure_modes_mitigated: [counting_error, format_check_error, regex_check_error, simple_arithmetic_error, code_behavior_error]
+    inputs_required: [visible_prompt, candidate_responses, model_written_code]
+    outputs_produced: [stdout, stderr, returncode, deterministic_evidence]
+    leakage_level: sample_visible
+    allowed_setting: [skill_operational]
+    visibility: always_when_operational_and_enabled
+    provenance: local_isolated_python_over_visible_text
+
+  - id: verifier.reference_match
+    type: verifier
+    implementation_kind: runtime_verifier
+    subtype: visible_reference_match
+    applies_to: [objective_answer, math, code, short_answer]
+    cost: low
+    hard_or_soft: mixed
+    decision_impact: evidence
+    failure_modes_mitigated: [answer_extraction_error, reference_mismatch]
+    inputs_required: [sample.reference_or_ground_truth, candidate_responses]
+    outputs_produced: [verifier_signal]
+    leakage_level: sample_visible
+    allowed_setting: [skill_operational]
+    visibility: when_sample_has_reference
+    provenance: local_verifier_over_visible_reference
+
+  - id: verifier.ground_truth_score_pair
+    type: verifier
+    implementation_kind: runtime_verifier
+    subtype: visible_ground_truth_llm_score_pair
+    applies_to: [objective_answer, math, code, factuality, forced_choice, judgebench]
+    cost: medium
+    hard_or_soft: mixed
+    decision_impact: strong
+    failure_modes_mitigated: [fluent_wrong_answer, final_answer_error, reference_mismatch, forced_choice_answer_error]
+    inputs_required: [sample.reference_or_ground_truth, candidate_responses]
+    outputs_produced: [candidate_scores, pairwise_verdict_signal]
+    leakage_level: sample_visible
+    allowed_setting: [skill_operational]
+    visibility: when_sample_has_reference
+    provenance: same_qwen_endpoint_over_visible_ground_truth
+
+  - id: external.openrs_pairwise_qwen
+    type: external_pipeline
+    implementation_kind: runtime_llm_pipeline
+    subtype: openrs_pairwise_prompt_same_base_model
+    applies_to: [pairwise, rmbench, judgebench]
+    cost: medium
+    hard_or_soft: mixed
+    decision_impact: strong
+    failure_modes_mitigated: [pairwise_prompt_drift, style_bias, tie_overuse]
+    inputs_required: [prompt, candidate_responses, visible_benchmark_metadata]
+    outputs_produced: [pairwise_winner_signal, raw_openrs_label]
+    leakage_level: sample_visible
+    allowed_setting: [skill_operational]
+    visibility: config_gated
+    provenance: same_qwen_endpoint_openrs_style_prompt
+
+  - id: external.rewardbench2_official_listwise_qwen
+    type: external_pipeline
+    implementation_kind: runtime_llm_pipeline
+    subtype: rewardbench2_official_compatible_listwise_prompt_same_base_model
+    applies_to: [rewardbench2, listwise, best_of_n]
+    cost: medium
+    hard_or_soft: mixed
+    decision_impact: strong
+    failure_modes_mitigated: [listwise_position_bias, precise_instruction_failure]
+    inputs_required: [prompt, candidate_responses, visible_benchmark_metadata]
+    outputs_produced: [listwise_winner_signal, raw_official_bracket_label]
+    leakage_level: sample_visible
+    allowed_setting: [skill_operational]
+    visibility: config_and_subset_gated
+    provenance: same_qwen_endpoint_rewardbench2_official_compatible_prompt

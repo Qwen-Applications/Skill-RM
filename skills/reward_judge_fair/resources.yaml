@@ -1,0 +1,92 @@
+resources:
+  - id: rubric.generic_pairwise
+    type: rubric
+    implementation_kind: reference
+    subtype: generic_pairwise
+    path: rubrics/generic_pairwise.md
+    applies_to: [pairwise, listwise]
+    cost: low
+    hard_or_soft: mixed
+    decision_impact: strong
+    failure_modes_mitigated: [generic_preference_noise, criteria_drift, style_bias]
+    inputs_required: [prompt, candidate_responses]
+    outputs_produced: [generic_reward_criteria]
+    leakage_level: sample_visible
+    allowed_setting: [skill_fair]
+
+  - id: principle.generic
+    type: principle
+    implementation_kind: reference
+    subtype: generic_reward_principles
+    path: references/generic_principles.md
+    applies_to: [pairwise, listwise]
+    cost: low
+    hard_or_soft: soft
+    decision_impact: strong
+    failure_modes_mitigated: [task_intent_miss, style_over_correctness, verbosity_bias]
+    inputs_required: [prompt, candidate_responses]
+    outputs_produced: [principle_guidance]
+    leakage_level: sample_visible
+    allowed_setting: [skill_fair]
+
+  - id: bias_control
+    type: calibration
+    implementation_kind: reference
+    subtype: bias_control
+    path: references/bias_control.md
+    applies_to: [pairwise, listwise]
+    cost: low
+    hard_or_soft: soft
+    decision_impact: calibration
+    failure_modes_mitigated: [position_bias, verbosity_bias, style_bias, confidence_bias]
+    inputs_required: [candidate_responses, provisional_verdict]
+    outputs_produced: [bias_check_policy]
+    leakage_level: sample_visible
+    allowed_setting: [skill_fair]
+
+  - id: aggregation.generic
+    type: aggregation
+    implementation_kind: reference
+    subtype: generic_visible_text_priority
+    path: references/generic_aggregation.md
+    applies_to: [pairwise, listwise]
+    cost: low
+    hard_or_soft: mixed
+    decision_impact: strong
+    failure_modes_mitigated: [weak_evidence_overreach, tie_overuse]
+    inputs_required: [prompt, candidate_responses, visible_tool_outputs]
+    outputs_produced: [aggregation_policy]
+    leakage_level: sample_visible
+    allowed_setting: [skill_fair]
+
+  - id: output_format
+    type: output_contract
+    implementation_kind: reference
+    subtype: json_verdict_contract
+    path: references/output_format.md
+    applies_to: [pairwise, listwise]
+    cost: low
+    hard_or_soft: hard
+    decision_impact: formatting
+    failure_modes_mitigated: [parse_error]
+    inputs_required: [final_verdict]
+    outputs_produced: [json_output_contract]
+    leakage_level: sample_visible
+    allowed_setting: [skill_fair]
+
+runtime_resources:
+  - id: tool.python_sandbox
+    type: tool
+    implementation_kind: runtime_python_sandbox
+    subtype: visible_content_python_execution
+    applies_to: [instruction_following, math, code, formatting, structured_output, pairwise, listwise]
+    cost: medium
+    hard_or_soft: hard
+    decision_impact: evidence
+    failure_modes_mitigated: [counting_error, format_check_error, regex_check_error, simple_arithmetic_error, code_behavior_error]
+    inputs_required: [visible_prompt, candidate_responses, model_written_code]
+    outputs_produced: [stdout, stderr, returncode, deterministic_evidence]
+    leakage_level: sample_visible
+    allowed_setting: [skill_fair]
+    visibility: always_when_fair_and_enabled
+    provenance: local_isolated_python_over_visible_text

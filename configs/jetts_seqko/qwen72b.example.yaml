@@ -1,0 +1,54 @@
+data_dir: ${JETTS_DATA_DIR}
+output_dir: outputs/jetts_seqko/qwen72b
+generator: Qwen2.5-72B-Instruct
+datasets:
+- gsm8k
+- bigcodebench
+- ifeval
+- humaneval
+seed: 0
+workers: 32
+candidate_limit: 10
+checkpoints:
+- 1
+- 2
+- 4
+- 8
+- 10
+progress_every: 10
+timeout: 600
+retries: 2
+endpoint_failover_attempts: 4
+model: Qwen3.5-27B
+api_key: EMPTY
+temperature: 0.0
+max_tokens: 4096
+max_agent_steps: 6
+enable_forced_finalization: true
+enable_thinking: false
+send_thinking_field: true
+endpoints: ${SKILLRM_BASE_URLS}
+settings:
+  baseline:
+    mode: baseline
+    use_final_answer_tool: false
+    enable_no_tool_forced_finalization: true
+    max_agent_steps: 1
+    max_tokens: 512
+  skill_fair:
+    mode: skill
+    skill_path: skills/reward_judge_fair
+    skill_loading_mode: progressive
+    skill_allowed_setting: skill_fair
+    max_agent_steps: 5
+    enable_run_resource: false
+    enable_python_sandbox: true
+  skill_operational:
+    mode: skill
+    skill_path: skills/reward_judge_operational
+    skill_loading_mode: progressive
+    skill_allowed_setting: skill_operational
+    max_agent_steps: 6
+    enable_run_resource: true
+    max_run_resources_per_sample: 2
+    enable_python_sandbox: true

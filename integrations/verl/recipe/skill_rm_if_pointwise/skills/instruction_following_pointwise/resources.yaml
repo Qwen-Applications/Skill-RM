@@ -1,0 +1,91 @@
+resources:
+  - id: if.constraint_toolkit
+    type: tool_protocol
+    implementation_kind: reference
+    subtype: python_sandbox_helper_guide
+    path: references/constraint_toolkit.md
+    hard_or_soft: hard
+    decision_impact: strong
+    leakage_level: benchmark_visible
+    cost: low
+    inputs_required: [prompt, candidate_response]
+    outputs_produced: [sandbox_usage_plan, helper_examples]
+    usage_note: Read before using python_sandbox; helper functions are preloaded and make exact checks shorter and less error-prone.
+
+  - id: if.constraint_tools_source
+    type: tool_protocol
+    implementation_kind: reference
+    subtype: python_sandbox_helper_source
+    path: scripts/constraint_tools.py
+    hard_or_soft: hard
+    decision_impact: evidence
+    leakage_level: benchmark_visible
+    cost: low
+    inputs_required: [prompt, candidate_response]
+    outputs_produced: [available_helper_functions]
+    usage_note: Source for helper functions already available inside python_sandbox; read only when helper behavior matters.
+
+  - id: if.constraint_verification_protocol
+    type: verifier
+    implementation_kind: reference
+    subtype: constraint_verification_protocol
+    path: verifiers/constraint_verification_protocol.md
+    hard_or_soft: mixed
+    decision_impact: strong
+    leakage_level: benchmark_visible
+    cost: low
+    inputs_required: [prompt, candidate_response, optional_checklist]
+    outputs_produced: [verification_policy, evidence_table_schema]
+    usage_note: Read before scoring exact numerical, format, keyword, language, or checklist-heavy samples.
+
+  - id: if.failure_taxonomy
+    type: taxonomy
+    implementation_kind: reference
+    subtype: instruction_following_failure_modes
+    path: references/failure_taxonomy.md
+    hard_or_soft: mixed
+    decision_impact: calibration
+    leakage_level: benchmark_visible
+    cost: low
+    inputs_required: [prompt, candidate_response]
+    outputs_produced: [failure_labels, severity_guidance]
+    usage_note: Read for ambiguous failures or when deciding whether a miss is minor, major, or critical.
+
+  - id: if.pointwise_rubric
+    type: rubric
+    implementation_kind: reference
+    subtype: instruction_following_pointwise
+    path: rubrics/pointwise_if_rubric.md
+    hard_or_soft: mixed
+    decision_impact: strong
+    leakage_level: benchmark_visible
+    cost: low
+    inputs_required: [prompt, candidate_response]
+    outputs_produced: [scalar_scoring_criteria]
+    usage_note: Read for calibration when no sample checklist is available or when constraint importance is ambiguous.
+
+  - id: if.aggregation_policy
+    type: aggregation
+    implementation_kind: reference
+    subtype: pointwise_constraint_aggregation
+    path: references/aggregation_policy.md
+    hard_or_soft: mixed
+    decision_impact: strong
+    leakage_level: benchmark_visible
+    cost: low
+    inputs_required: [constraint_results, verifier_outputs]
+    outputs_produced: [score_aggregation_policy]
+    usage_note: Read when verifier evidence and semantic judgment disagree or when constraints have different importance.
+
+  - id: if.bias_control
+    type: calibration
+    implementation_kind: reference
+    subtype: instruction_following_bias_control
+    path: references/bias_control.md
+    hard_or_soft: soft
+    decision_impact: calibration
+    leakage_level: benchmark_visible
+    cost: low
+    inputs_required: [candidate_response, provisional_score]
+    outputs_produced: [bias_check_policy]
+    usage_note: Read for close calls where verbosity, formatting polish, position, or confident tone might distort the score.
